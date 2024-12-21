@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import connect from "./db/connect.js";
+import fs from "fs";
 dotenv.config();
 
 const app = express();
@@ -29,6 +30,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(auth(config));
+
+// routes
+const routeFiles = fs.readdirSync("./routes");
+
+routeFiles.forEach((file)=> {
+  // import dynamic routes
+  import(`./routes/${file}`).then((route)=> {
+    app.use(route.default);
+  })
+  .catch((error)=> {
+    console.log("Error importing route", error);
+  })
+})
 
 const server = async() => {
   try {

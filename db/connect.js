@@ -11,3 +11,4 @@ const connect = async () => {
 };
 
 export default connect;
+// In this snippet, we have created a new file called connect.js and moved the database connection logic to this file. We have also exported the connect function so that it can be imported and used in server.js. This separation of concerns helps keep the codebase organized and makes it easier to maintain and debug.
