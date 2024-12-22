@@ -31,13 +31,15 @@ app.use(cookieParser());
 
 app.use(auth(config));
 
+// function to check if user exists in database
+
 // routes
 const routeFiles = fs.readdirSync("./routes");
 
 routeFiles.forEach((file)=> {
   // import dynamic routes
   import(`./routes/${file}`).then((route)=> {
-    app.use(route.default);
+    app.use("/api/v1/", route.default);
   })
   .catch((error)=> {
     console.log("Error importing route", error);
