@@ -90,11 +90,13 @@ export const createJob = asyncHandler(async (req, res) => {
 
 export const getJobs = asyncHandler(async (req, res) => {
   try {
-    const jobs = await Job.find({}).populate(
-      // this will populate and get the createdBy field with the name and profilePicture of the user
-      "createdBy",
-      "name profilePicture"
-    ).sort({ createdAt: -1 }); // sort by latest jobs
+    const jobs = await Job.find({})
+      .populate(
+        // this will populate and get the createdBy field with the name and profilePicture of the user
+        "createdBy",
+        "name profilePicture"
+      )
+      .sort({ createdAt: -1 }); // sort by latest jobs
 
     return res.status(200).json(jobs);
   } catch (error) {
@@ -116,10 +118,9 @@ export const getJobsByUser = asyncHandler(async (req, res) => {
       });
     }
 
-    const jobs = await Job.find({ createdBy: user._id }).populate(
-      "createdBy",
-      "name profilePicture",
-    ).sort({ createdAt: -1 });
+    const jobs = await Job.find({ createdBy: user._id })
+      .populate("createdBy", "name profilePicture")
+      .sort({ createdAt: -1 });
     return res.status(200).json(jobs);
   } catch (error) {
     console.log("Error in getJobsByUser", error);
@@ -132,7 +133,7 @@ export const getJobsByUser = asyncHandler(async (req, res) => {
 // search jobs
 export const searchJobs = asyncHandler(async (req, res) => {
   try {
-    const {tags, location, title} = req.query;
+    const { tags, location, title } = req.query;
 
     let query = {};
 
@@ -149,15 +150,52 @@ export const searchJobs = asyncHandler(async (req, res) => {
       query.title = { $regex: title, $options: "i" };
     }
 
-    const jobs = await Job.find(query).populate(
-      "createdBy",
-      "name profilePicture"
-    ).sort({ createdAt: -1 });
+    const jobs = await Job.find(query)
+      .populate("createdBy", "name profilePicture")
+      .sort({ createdAt: -1 });
 
     return res.status(200).json(jobs);
-    
   } catch (error) {
     console.log("Error in searchJobs", error);
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
+
+// apply for job
+export const applyJob = asyncHandler(async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+
+    // to check if job exists
+    if(!job) {
+      return res.status(404).json({
+        message: "Job not found"
+      })
+    }
+
+    const user = await User.findOne({ auth0Id: req.oidc.user.sub });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if(job.applicants.includes(user._id)) {
+      return res.status(400).json({
+        message: "You have already applied for this job"
+      })
+    }
+    job.applicants.push(user._id); // add user to applicants array of the job
+
+    await job.save(); // save the job with updated applicants array
+
+    return res.status(200).json(job); // return the job with updated applicants array
+
+  } catch (error) {
+    console.log("Error in applyJob", error);
     return res.status(500).json({
       message: "Server Error",
     });
