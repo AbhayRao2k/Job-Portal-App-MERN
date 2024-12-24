@@ -90,11 +90,74 @@ export const createJob = asyncHandler(async (req, res) => {
 
 export const getJobs = asyncHandler(async (req, res) => {
   try {
-    const jobs = await Job.find({});
+    const jobs = await Job.find({}).populate(
+      // this will populate and get the createdBy field with the name and profilePicture of the user
+      "createdBy",
+      "name profilePicture"
+    ).sort({ createdAt: -1 }); // sort by latest jobs
 
-    console.log("Jobs", jobs);
+    return res.status(200).json(jobs);
   } catch (error) {
     console.log("Error in getJobs", error);
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
+
+// get jobs by user
+export const getJobsByUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const jobs = await Job.find({ createdBy: user._id }).populate(
+      "createdBy",
+      "name profilePicture",
+    ).sort({ createdAt: -1 });
+    return res.status(200).json(jobs);
+  } catch (error) {
+    console.log("Error in getJobsByUser", error);
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
+
+// search jobs
+export const searchJobs = asyncHandler(async (req, res) => {
+  try {
+    const {tags, location, title} = req.query;
+
+    let query = {};
+
+    if (tags) {
+      query.tags = { $in: tags.split(",") };
+    }
+
+    if (location) {
+      // "i" means case-insensitive search
+      query.location = { $regex: location, $options: "i" };
+    }
+
+    if (title) {
+      query.title = { $regex: title, $options: "i" };
+    }
+
+    const jobs = await Job.find(query).populate(
+      "createdBy",
+      "name profilePicture"
+    ).sort({ createdAt: -1 });
+
+    return res.status(200).json(jobs);
+    
+  } catch (error) {
+    console.log("Error in searchJobs", error);
     return res.status(500).json({
       message: "Server Error",
     });
