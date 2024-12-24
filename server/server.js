@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import connect from "./db/connect.js";
 import fs from "fs";
-import User from "./models/userModel.js";
+import User from "./models/UserModel.js";
 import asyncHandler from "express-async-handler";
 dotenv.config();
 
