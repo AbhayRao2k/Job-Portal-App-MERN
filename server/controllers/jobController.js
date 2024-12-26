@@ -201,3 +201,100 @@ export const applyJob = asyncHandler(async (req, res) => {
     });
   }
 });
+
+// like job and unlike job
+export const likeJob = asyncHandler(async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+
+    // to check if job exists
+    if(!job) {
+      return res.status(404).json({
+        message: "Job not found"
+      })
+    }
+
+    const user = await User.findOne({ auth0Id: req.oidc.user.sub });
+    
+    // to check if user exists
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const isLiked = job.likes.includes(user._id);
+
+    // if job is already liked by the user, then unlike the job
+    if(isLiked) {
+      job.likes = job.likes.filter((like) => !like.equals(user._id));
+    } else {
+      job.likes.push(user._id);
+    }
+
+    await job.save();
+
+    return res.status(200).json(job);
+
+  } catch (error) {
+    console.log("Error in likeJob", error);
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
+
+// get job by id
+export const getJobById = asyncHandler(async (req, res) => {
+  try {
+    const {id} = req.params;
+
+    const job = await Job.findById(id).populate("createdBy", "name profilePicture");
+
+    if(!job) {
+      return res.status(404).json({
+        message: "Job not found"
+      })
+    }
+
+    return res.status(200).json(job);
+  } catch (error) {
+    console.log("Error in getJobById", error);
+    return res.status(500).json({
+      message: "Server Error",
+    });
+    
+  }
+});
+
+// delete job
+export const deleteJob = asyncHandler(async (req, res) => {
+  try {
+    const {id} = req.params;
+
+    const job = await Job.findById(id);
+    const user = await User.findOne({ auth0Id: req.oidc.user.sub });
+
+    if(!job) {
+      return res.status(404).json({
+        message: "Job not found"
+      })
+    }
+
+    if(!user) {
+      return res.status(404).json({
+        message: "User not found"
+      })
+    } 
+
+    await job.deleteOne({_id: id});
+    return res.status(200).json({
+      message: "Job deleted successfully"
+    });
+  } catch (error) {
+    console.log("Error in deleteJob", error);
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
