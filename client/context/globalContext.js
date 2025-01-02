@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 const GlobalContext = createContext();
 
@@ -8,7 +7,6 @@ axios.defaults.baseURL = "http://localhost:8000"; // the server url to send requ
 axios.defaults.withCredentials = true; // to send cookies with every request
 
 export const GlobalContextProvider = ({ children }) => {
-  const router = useRouter();
 
   // State variables to store the user's authentication status and profile
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,19 +34,18 @@ export const GlobalContextProvider = ({ children }) => {
   const getUserProfile = async (id) => {
     try {
       const res = await axios.get(`/api/v1/user/${id}`);
-      console.log("User profile", res.data);
       setUserProfile(res.data);
     } catch (error) {
       console.log("Error fetching user profile", error);
     }
   };
 
-  console.log(auth0User)
-
   useEffect(() => {
-    getUserProfile("google-oauth2|106774463390218834295")
-  }, []);
-
+    if (isAuthenticated && auth0User) {
+      getUserProfile(auth0User.sub);
+    }
+  }, [isAuthenticated, auth0User]);
+ 
   return (
     <GlobalContext.Provider
       value={{
