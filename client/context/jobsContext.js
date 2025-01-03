@@ -47,6 +47,7 @@ export const JobsContextProvider = ({ children }) => {
     }
   };
 
+  // Get all jobs created by a specific user
   const getUserJobs = async (userId) => {
     setLoading(true);
     try {
@@ -55,6 +56,85 @@ export const JobsContextProvider = ({ children }) => {
       setLoading(false);
     } catch (error) {
       console.log("Error getting user jobs", error);
+    }
+  };
+
+  // Search for jobs by title
+  const searchJobs = async (tags, location, title) => {
+    setLoading(true);
+    try {
+      // build query string
+      const query = new URLSearchParams();
+
+      if (tags) query.append("tags", tags);
+      if (location) query.append("location", location);
+      if (title) query.append("title", title);
+
+      // send the request
+      const res = await axios.get(`/api/v1/jobs/search?${query.toString()}`);
+
+      // set jobs to the response data
+      setJobs(res.data);
+
+      setLoading(false);
+    } catch (error) {
+      console.log("Error searching for jobs", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // get job by id
+  const getJobById = async (id) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`/api/v1/jobs/${id}`);
+      return res.data;
+    } catch (error) {
+      console.log("Error getting job by id", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Like a job
+  const likeJob = async (jobId) => {
+    try {
+      const res = await axios.put(`/api/v1/jobs/like/${jobId}`);
+      console.log(res.data);
+      toast.success("Job liked successfully");
+      getJobs();
+    } catch (error) {
+      console.log("Error liking job", error);
+    }
+  };
+
+  // apply to a job
+  const applyToJob = async (jobId) => {
+    try {
+      const res = await axios.put(`/api/v1/jobs/apply/${jobId}`);
+
+      toast.success("Applied to job successfully");
+      getJobs();
+    } catch (error) {
+      console.log("Error applying to job", error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  // delete a job
+  const deleteJob = async (jobId) => {
+    try {
+      const res = await axios.delete(`/api/v1/jobs/${jobId}`);
+
+      // remove the job from the jobs state array
+      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+
+      searchJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+
+      toast.success("Job deleted successfully");
+    } catch (error) {
+      console.log("Error deleting job", error);
     }
   };
 
@@ -68,10 +148,18 @@ export const JobsContextProvider = ({ children }) => {
     }
   }, [userProfile]);
 
-  console.log("User jobs", userJobs);
-
   return (
-    <JobsContext.Provider value={"hello"}>{children}</JobsContext.Provider>
+    <JobsContext.Provider value={{
+      jobs,
+      loading,
+      createJob,
+      userJobs,
+      searchJobs,
+      getJobById,
+      likeJob,
+      applyToJob,
+      deleteJob,
+    }}>{children}</JobsContext.Provider>
   );
 };
 
