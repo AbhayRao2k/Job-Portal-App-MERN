@@ -1,5 +1,7 @@
 "use client";
+import Footer from "@/Components/Footer";
 import Header from "@/Components/Header";
+import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
 import {
   Card,
@@ -10,7 +12,13 @@ import {
   CardTitle,
 } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
-import { Briefcase, Building, CheckCircleIcon, SearchIcon, Users } from "lucide-react";
+import {
+  Briefcase,
+  Building,
+  CheckCircleIcon,
+  SearchIcon,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -123,8 +131,34 @@ export default function Home() {
               </Card>
             ))}
           </div>
+
+          <div className="mt-12 text-center">
+            <Badge
+              variant={"outline"}
+              className="text-sm font-medium border-gray-400"
+            >
+              Trusted by 10,000+ companies worldwide
+            </Badge>
+          </div>
         </div>
       </section>
+
+      <section className="py-[7rem] bg-[#d7dedc]">
+        <div className="container mx-auto px-4 text-center">
+          <h2>Ready to Get Started?</h2>
+
+          <div className="flex flex-col md:flex-row justify-center gap-4">
+            <Button size={"lg"} asChild>
+              <Link href={"/findwork"}>Explore Jobs</Link>
+            </Button>
+            <Button size={"lg"} variant={"outline"} asChild>
+              <Link href={"/post"}>Post a Job</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </main>
   );
 }

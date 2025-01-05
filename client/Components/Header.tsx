@@ -54,19 +54,19 @@ function Header() {
 
       <div className="flex items-center gap-4">
         {isAuthenticated ? (
-          <Profile />
+          <div>Profile</div>
         ) : (
           <div className="flex items-center gap-6">
             <Link
-              href={"https://jobfindr-q1cl.onrender.com/login"}
+              href={"http://localhost:8000/login"}
               className="py-2 px-6 rounded-md border flex items-center gap-4 bg-[#7263F3] text-white border-[#7263F3] hover:bg-[#7263F3]/90 trasition-all duration-200 ease-in-out"
             >
               <LogIn className="w-4 h-4" />
               Login
             </Link>
             <Link
-              href={"https://jobfindr-q1cl.onrender.com/login"}
-              className="py-2 px-6 rounded-md border flex items-center gap-4 border-[#7263F3] text-[#7263F3] hover:bg-[#7263F3]/10 trasition-all duration-200 ease-in-out"
+              href={"http://localhost:8000/login"}
+              className="py-2 px-6 rounded-md border flex items-center gap-4 text-[#7263F3] border-[#7263F3] hover:bg-[#7263F3]/10 trasition-all duration-200 ease-in-out"
             >
               <UserPlus className="w-4 h-4" />
               Register
