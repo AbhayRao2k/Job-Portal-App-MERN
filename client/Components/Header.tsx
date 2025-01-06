@@ -14,7 +14,7 @@ function Header() {
     <header className="px-10 py-6 bg-[#D7DEDC] text-gray-500 flex justify-between items-center">
       <Link href={"/"} className="flex items-center gap-2">
         <Image src="/next.svg" alt="logo" width={45} height={45} />
-        <h1 className="font-extrabold text-2xl text-[#7263f3]">Job Portal</h1>
+        <h1 className="font-extrabold text-2xl text-[#7263f3]">Job Hunter</h1>
       </Link>
 
       <ul className="flex items-center gap-8">
@@ -40,9 +40,9 @@ function Header() {
             My Jobs
           </Link>
           <Link
-            href={"/post"}
+            href={"/postjob"}
             className={`py-2 px-6 rounded-md ${
-              pathname === "/post"
+              pathname === "/postjob"
                 ? "text-[#7263F3] border-[#7263F3] border bg-[#7263F3]/10"
                 : ""
             }`}
@@ -54,7 +54,7 @@ function Header() {
 
       <div className="flex items-center gap-4">
         {isAuthenticated ? (
-          <div>Profile</div>
+          <Profile />
         ) : (
           <div className="flex items-center gap-6">
             <Link
