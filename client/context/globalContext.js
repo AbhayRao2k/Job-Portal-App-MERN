@@ -56,7 +56,7 @@ export const GlobalContextProvider = ({ children }) => {
   };
 
   // handle input change
-  const handleInputChange = (e) => {
+  const handleTitleChange = (e) => {
     setJobTitle(e.target.value.trimStart());
   };
 
@@ -91,7 +91,7 @@ export const GlobalContextProvider = ({ children }) => {
         tags,
         skills,
         location,
-        handleInputChange,
+        handleTitleChange,
         handleDescriptionChange,
         handleSalaryChange,
       }}
