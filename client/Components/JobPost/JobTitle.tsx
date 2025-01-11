@@ -1,9 +1,10 @@
 "use client";
 import { useGlobalContext } from "@/context/globalContext";
-import React from "react";
+import React, { useEffect } from "react";
 import { Separator } from "@/Components/ui/separator";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
 
 interface EmploymentTypeProps {
   "Full Time": string;
@@ -33,6 +34,14 @@ function JobTitle() {
   const handleEmploymentTypeChange = (type: keyof EmploymentTypeProps) => {
     setEmploymentTypes((prev) => ({ ...prev, [type]: !prev[type] }));
   };
+
+  useEffect(()=>{
+    const selectedTypes = Object.keys(employmentTypes).filter((type)=>{
+      return employmentTypes[type as keyof EmploymentTypeProps]
+    })
+
+    setActiveEmploymentTypes(selectedTypes);
+  }, [employmentTypes])
 
   return (
     <div className="p-6 flex flex-col gap-4 bg-background border border-border rounded-lg">
@@ -66,8 +75,27 @@ function JobTitle() {
             Select the type of Employment
           </Label>
           <div className="flex-1 flex flex-col gap-2">
-            {Object.entries(employmentTypes).map(([type, value]) => (
-              <div key={type}></div>
+            {Object.entries(employmentTypes).map(([type, checked]) => (
+              <div
+                key={type}
+                className="flex items-center space-x-2 border border-input rounded-md p-2"
+              >
+                <Checkbox
+                  id={type}
+                  checked={checked}
+                  onCheckedChange={() => {
+                    handleEmploymentTypeChange(
+                      type as keyof EmploymentTypeProps
+                    );
+                  }}
+                />
+                <Label
+                  htmlFor={type}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {type}
+                </Label>
+              </div>
             ))}
           </div>
         </div>

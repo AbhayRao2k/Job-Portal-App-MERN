@@ -7,7 +7,7 @@ function page() {
     <div>
       <Header />
 
-      <h2 className="flex-1 pt-0 mx-auto w-[90%] text-3xl font-bold text-black">
+      <h2 className="flex-1 py-3 mx-auto w-[90%] text-3xl font-bold text-black">
         Create a Job Post
       </h2>
 

@@ -7,7 +7,6 @@ axios.defaults.baseURL = "http://localhost:8000"; // the server url to send requ
 axios.defaults.withCredentials = true; // to send cookies with every request
 
 export const GlobalContextProvider = ({ children }) => {
-
   // State variables to store the user's authentication status and profile
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [auth0User, setAuth0User] = useState(null);
@@ -68,12 +67,28 @@ export const GlobalContextProvider = ({ children }) => {
     setSalary(e.target.value);
   };
 
+  const resetJobForm = () => {
+    setJobTitle("");
+    setJobDescription("");
+    setSalary(0);
+    setActiveEmploymentTypes([]);
+    setSalaryType("Year");
+    setNegotiable(false);
+    setTags([]);
+    setSkills([]);
+    setLocation({
+      country: "",
+      city: "",
+      address: "",
+    });
+  };
+
   useEffect(() => {
     if (isAuthenticated && auth0User) {
       getUserProfile(auth0User.sub);
     }
   }, [isAuthenticated, auth0User]);
- 
+
   return (
     <GlobalContext.Provider
       value={{
@@ -94,6 +109,14 @@ export const GlobalContextProvider = ({ children }) => {
         handleTitleChange,
         handleDescriptionChange,
         handleSalaryChange,
+        setActiveEmploymentTypes,
+        setJobDescription,
+        setSalaryType,
+        setNegotiable,
+        setTags,
+        setSkills,
+        setLocation,
+        resetJobForm,
       }}
     >
       {children}
