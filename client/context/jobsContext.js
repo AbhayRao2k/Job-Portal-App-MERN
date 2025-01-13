@@ -1,4 +1,4 @@
-import React, { createContext, use, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useGlobalContext } from "./globalContext";
 import axios from "axios";
 import toast from "react-hot-toast";
