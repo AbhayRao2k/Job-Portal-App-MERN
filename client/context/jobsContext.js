@@ -130,7 +130,7 @@ export const JobsContextProvider = ({ children }) => {
       // remove the job from the jobs state array
       setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
 
-      searchJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+      setUserJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
 
       toast.success("Job deleted successfully");
     } catch (error) {
