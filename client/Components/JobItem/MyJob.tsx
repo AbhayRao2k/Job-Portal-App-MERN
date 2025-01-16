@@ -8,6 +8,7 @@ import { formatDates } from "@/utils/FormatDates";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Pencil, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface JobProps {
   job: Job;
@@ -15,9 +16,14 @@ interface JobProps {
 
 function MyJob({ job }: JobProps) {
   const { deleteJob } = useJobsContext();
+
+  const router = useRouter();
   return (
     <div className="p-8 bg-white rounded-xl flex flex-col gap-5">
-      <div className="flex items-center space-x-4 mb-2">
+      <div
+        className="flex items-center space-x-4 mb-2 cursor-pointer"
+        onClick={() => router.push(`/job/${job._id}`)}
+      >
         <Image
           alt={`logo`}
           src={job.createdBy.profilePicture || "/user.png"}
@@ -62,7 +68,12 @@ function MyJob({ job }: JobProps) {
               <span className="sr-only">Edit Job</span>
             </Button>
 
-            <Button variant="ghost" size="icon" className="text-gray-500 hover:text-red-500" onClick={()=> deleteJob(job._id)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-500 hover:text-red-500"
+              onClick={() => deleteJob(job._id)}
+            >
               <Trash size={14} />
               <span className="sr-only">Delete Job</span>
             </Button>
