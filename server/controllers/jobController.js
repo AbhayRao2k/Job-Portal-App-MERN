@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/UserModel.js";
-import Job from "../models/jobModel.js";
+import Job from "../models/JobModel.js";
 
 export const createJob = asyncHandler(async (req, res) => {
   try {
