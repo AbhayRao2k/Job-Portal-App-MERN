@@ -3,7 +3,7 @@ import axios from "axios";
 
 const GlobalContext = createContext();
 
-axios.defaults.baseURL = "http://localhost:8000"; // the server url to send requests
+axios.defaults.baseURL = "https://job-portal-app-mern-nqri.onrender.com"; // the server url to send requests
 axios.defaults.withCredentials = true; // to send cookies with every request
 
 export const GlobalContextProvider = ({ children }) => {

@@ -11,7 +11,7 @@ function page() {
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      router.push("http://localhost:8000/login");
+      router.push("https://job-portal-app-mern-nqri.onrender.com/login");
     }
   }, [isAuthenticated]);
   return (

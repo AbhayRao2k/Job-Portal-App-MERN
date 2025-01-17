@@ -175,7 +175,7 @@ function page() {
                   toast.error("You have already applied to this job");
                 }
               } else {
-                router.push("http://localhost:8000/login");
+                router.push("https://job-portal-app-mern-nqri.onrender.com/login");
               }
             }}
           >

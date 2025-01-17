@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 const JobsContext = createContext();
 
 // Set the base URL for the axios requests and include credentials in the requests to send cookies with every request to the server
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "https://job-portal-app-mern-nqri.onrender.com";
 axios.defaults.withCredentials = true;
 
 export const JobsContextProvider = ({ children }) => {
