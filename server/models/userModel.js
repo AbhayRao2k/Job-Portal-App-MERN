@@ -57,6 +57,7 @@ const userSchema = new mongoose.Schema(
       default: "Unemployed",
     },
   },
+  
   // timestamps are for when the user was created and last updated
   { timestamps: true }
 );
