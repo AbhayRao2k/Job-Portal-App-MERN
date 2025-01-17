@@ -9,15 +9,16 @@ import {
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
 import { Settings, LogOut } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useGlobalContext } from "@/context/globalContext";
 import { Badge } from "./ui/badge";
-import Image from "next/image";
 
 function Profile() {
   const { userProfile } = useGlobalContext();
 
   const { profilePicture, name, profession, email } = userProfile;
+
   const router = useRouter();
   return (
     <DropdownMenu>

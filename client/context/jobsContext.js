@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useGlobalContext } from "./globalContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const JobsContext = createContext();
 
@@ -10,7 +11,8 @@ axios.defaults.baseURL = "http://localhost:8000";
 axios.defaults.withCredentials = true;
 
 export const JobsContextProvider = ({ children }) => {
-  const { userProfile } = useGlobalContext();
+  const { userProfile, getUserProfile } = useGlobalContext();
+  const router = useRouter();
 
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -35,7 +37,7 @@ export const JobsContextProvider = ({ children }) => {
   });
 
   const [minSalary, setMinSalary] = useState(30000);
-  const [maxSalary, setMaxSalary] = useState(120000);
+  const [maxSalary, setMaxSalary] = useState(500000);
 
   // Get all jobs from the server
   const getJobs = async () => {
@@ -62,7 +64,12 @@ export const JobsContextProvider = ({ children }) => {
       // update userJobs state array
       if (userProfile._id) {
         setUserJobs((prevUserJobs) => [res.data, ...prevUserJobs]);
+        await getUserJobs(userProfile._id);
       }
+
+      await getJobs();
+      // redirect to the job details page
+      router.push(`/job/${res.data._id}`);
     } catch (error) {
       console.log("Error creating job", error);
     }
@@ -72,11 +79,14 @@ export const JobsContextProvider = ({ children }) => {
   const getUserJobs = async (userId) => {
     setLoading(true);
     try {
-      const res = await axios.get(`/api/v1/jobs/user/${userId}`);
+      const res = await axios.get("/api/v1/jobs/user/" + userId);
+
       setUserJobs(res.data);
       setLoading(false);
     } catch (error) {
       console.log("Error getting user jobs", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,14 +102,14 @@ export const JobsContextProvider = ({ children }) => {
       if (title) query.append("title", title);
 
       // send the request
+
       const res = await axios.get(`/api/v1/jobs/search?${query.toString()}`);
 
       // set jobs to the response data
       setJobs(res.data);
-
       setLoading(false);
     } catch (error) {
-      console.log("Error searching for jobs", error);
+      console.log("Error searching jobs", error);
     } finally {
       setLoading(false);
     }
@@ -110,6 +120,8 @@ export const JobsContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const res = await axios.get(`/api/v1/jobs/${id}`);
+
+      setLoading(false);
       return res.data;
     } catch (error) {
       console.log("Error getting job by id", error);
@@ -120,9 +132,11 @@ export const JobsContextProvider = ({ children }) => {
 
   // Like a job
   const likeJob = async (jobId) => {
+    console.log("Job liked", jobId);
     try {
       const res = await axios.put(`/api/v1/jobs/like/${jobId}`);
-      console.log(res.data);
+
+      console.log("Job liked successfully", res);
       toast.success("Job liked successfully");
       getJobs();
     } catch (error) {
@@ -132,6 +146,13 @@ export const JobsContextProvider = ({ children }) => {
 
   // apply to a job
   const applyToJob = async (jobId) => {
+    const job = jobs.find((job) => job._id === jobId);
+
+    if (job && job.applicants.includes(userProfile._id)) {
+      toast.error("You have already applied to this job");
+      return;
+    }
+
     try {
       const res = await axios.put(`/api/v1/jobs/apply/${jobId}`);
 
@@ -146,11 +167,8 @@ export const JobsContextProvider = ({ children }) => {
   // delete a job
   const deleteJob = async (jobId) => {
     try {
-      const res = await axios.delete(`/api/v1/jobs/${jobId}`);
-
-      // remove the job from the jobs state array
+      await axios.delete(`/api/v1/jobs/${jobId}`);
       setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
-
       setUserJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
 
       toast.success("Job deleted successfully");
@@ -174,8 +192,9 @@ export const JobsContextProvider = ({ children }) => {
   useEffect(() => {
     if (userProfile._id) {
       getUserJobs(userProfile._id);
+      getUserProfile(userProfile.auth0Id);
     }
-  }, [userProfile]);
+  }, [userProfile._id]);
 
   return (
     <JobsContext.Provider

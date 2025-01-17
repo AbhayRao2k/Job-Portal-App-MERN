@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 const GlobalContext = createContext();
 
@@ -38,20 +37,22 @@ export const GlobalContextProvider = ({ children }) => {
         setAuth0User(res.data.user);
         setLoading(false);
       } catch (error) {
-        console.log("Error checking authentication", error);
+        console.log("Error checking auth", error);
       } finally {
         setLoading(false);
       }
     };
+
     checkAuth();
   }, []);
 
   const getUserProfile = async (id) => {
     try {
       const res = await axios.get(`/api/v1/user/${id}`);
+
       setUserProfile(res.data);
     } catch (error) {
-      console.log("Error fetching user profile", error);
+      console.log("Error getting user profile", error);
     }
   };
 

@@ -133,7 +133,7 @@ function JobCard({ job, activeJob }: JobProps) {
 
       <div className="flex justify-between items-center gap-6">
         <p>
-          <span className="font-bold">{formatMoney(salary, "GBP")}</span>
+          <span className="font-bold">{formatMoney(salary, "INR")}</span>
           <span className="font-medium text-gray-400 text-lg">
             /
             {salaryType === "Yearly"

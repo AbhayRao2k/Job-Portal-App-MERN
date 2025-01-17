@@ -148,7 +148,7 @@ function Filters() {
           <Slider
             id="minSalary"
             min={0}
-            max={200000}
+            max={500000}
             step={50}
             value={[minSalary]}
             onValueChange={handleMinSalaryChange}
@@ -164,14 +164,14 @@ function Filters() {
         <Slider
           id="maxSalary"
           min={0}
-          max={200000}
+          max={500000}
           step={50}
           value={[maxSalary]}
           onValueChange={handleMaxSalaryChange}
           className="w-full"
         />
         <span className="text-sm text-gray-500">
-          {formatMoney(maxSalary, "GBP")}
+          {formatMoney(maxSalary, "INR")}
         </span>
       </div>
     </div>

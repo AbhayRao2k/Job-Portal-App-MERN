@@ -7,7 +7,6 @@ import { useJobsContext } from "@/context/jobsContext";
 import { Job } from "@/types/types";
 import formatMoney from "@/utils/FormatMoney";
 import { formatDates } from "@/utils/FormatDates";
-import { Bookmark } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -100,7 +99,7 @@ function page() {
                 onClick={() => {
                   isAuthenticated
                     ? handleLike(job._id)
-                    : router.push("http://localhost:8000/login");
+                    : router.push("http://localhost:800/login");
                 }}
               >
                 {isLiked ? bookmark : bookmarkEmpty}
@@ -118,7 +117,7 @@ function page() {
 
                 <span>
                   <span className="font-bold">
-                    {formatMoney(salary, "GBP")}
+                    {formatMoney(salary, "INR")}
                   </span>
                   <span className="font-medium text-gray-500 text-lg">
                     /
@@ -176,7 +175,7 @@ function page() {
                   toast.error("You have already applied to this job");
                 }
               } else {
-                router.push("https://localhost:8000/login");
+                router.push("http://localhost:8000/login");
               }
             }}
           >

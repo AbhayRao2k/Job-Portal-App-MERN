@@ -68,13 +68,14 @@ export default function Home() {
   return (
     <main>
       <Header />
-      <section className="py-20 bg-gradient-to-b from-[#d7dedd] to-[#7263f3]/5 text-primary-foreground">
+
+      <section className="py-20 bg-gradient-to-b from-[#d7dedc] to-[#7263f3]/5 text-primary-foreground">
         <div className="container mx-auto px-4 text-center text-black">
           <h1 className="text-4xl text-[#7263f3] md:text-5xl font-bold mb-6">
             Find Your Dream Job or Perfect Candidate
           </h1>
           <p className="text-xl mb-8">
-            Connect with thousand of employers and job seekers on our platform
+            Connect with thousands of employers and job seekers on our platform
           </p>
           <div className="max-w-2xl mx-auto flex gap-4">
             <Input
@@ -145,11 +146,11 @@ export default function Home() {
 
       <section className="py-[7rem] bg-[#d7dedc]">
         <div className="container mx-auto px-4 text-center">
-          <h2>Ready to Get Started?</h2>
+          <h2 className="text-3xl font-bold mb-8">Ready to Get Started?</h2>
 
           <div className="flex flex-col md:flex-row justify-center gap-4">
             <Button size={"lg"} asChild>
-              <Link href={"/findwork"}>Explore Jobs</Link>
+              <Link href={"/findwork"}>Find Work</Link>
             </Button>
             <Button size={"lg"} variant={"outline"} asChild>
               <Link href={"/post"}>Post a Job</Link>
