@@ -16,6 +16,27 @@ export const JobsContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [userJobs, setUserJobs] = useState([]);
 
+  const [searchQuery, setSearchQuery] = useState({
+    tags: "",
+    location: "",
+    title: "",
+  });
+
+  //filters
+  const [filters, setFilters] = useState({
+    fullTime: false,
+    partTime: false,
+    internship: false,
+    contract: false,
+    fullStack: false,
+    backend: false,
+    devOps: false,
+    uiux: false,
+  });
+
+  const [minSalary, setMinSalary] = useState(30000);
+  const [maxSalary, setMaxSalary] = useState(120000);
+
   // Get all jobs from the server
   const getJobs = async () => {
     setLoading(true);
@@ -138,6 +159,14 @@ export const JobsContextProvider = ({ children }) => {
     }
   };
 
+  const handleSearchChange = (searchName, value) => {
+    setSearchQuery((prev) => ({ ...prev, [searchName]: value }));
+  };
+
+  const handleFilterChange = (filterName) => {
+    setFilters((prev) => ({ ...prev, [filterName]: !prev[filterName] }));
+  };
+
   useEffect(() => {
     getJobs();
   }, []);
@@ -149,17 +178,31 @@ export const JobsContextProvider = ({ children }) => {
   }, [userProfile]);
 
   return (
-    <JobsContext.Provider value={{
-      jobs,
-      loading,
-      createJob,
-      userJobs,
-      searchJobs,
-      getJobById,
-      likeJob,
-      applyToJob,
-      deleteJob,
-    }}>{children}</JobsContext.Provider>
+    <JobsContext.Provider
+      value={{
+        jobs,
+        loading,
+        createJob,
+        userJobs,
+        searchJobs,
+        getJobById,
+        likeJob,
+        applyToJob,
+        deleteJob,
+        handleSearchChange,
+        searchQuery,
+        setSearchQuery,
+        handleFilterChange,
+        filters,
+        minSalary,
+        setMinSalary,
+        maxSalary,
+        setMaxSalary,
+        setFilters,
+      }}
+    >
+      {children}
+    </JobsContext.Provider>
   );
 };
 

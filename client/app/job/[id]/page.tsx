@@ -118,7 +118,7 @@ function page() {
 
                 <span>
                   <span className="font-bold">
-                    {formatMoney(salary, "INR")}
+                    {formatMoney(salary, "GBP")}
                   </span>
                   <span className="font-medium text-gray-500 text-lg">
                     /
@@ -176,7 +176,7 @@ function page() {
                   toast.error("You have already applied to this job");
                 }
               } else {
-                router.push("http://localhost:8000/login");
+                router.push("https://localhost:8000/login");
               }
             }}
           >
