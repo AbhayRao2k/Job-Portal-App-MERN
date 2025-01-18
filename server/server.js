@@ -8,6 +8,7 @@ import connect from "./db/connect.js";
 import fs from "fs";
 import User from "./models/UserModel.js";
 import asyncHandler from "express-async-handler";
+import { callbackify } from "util";
 dotenv.config();
 
 const app = express();
@@ -21,13 +22,28 @@ const config = {
   issuerBaseURL: process.env.ISSUER_BASE_URL,
   routes: {
     postLogoutRedirect: process.env.CLIENT_URL,
-  }
+    callback: "/callback",
+    logout: "/logout",
+    login: "/login",
+  },
+
+  session: {
+    absoluteDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    cookie: {
+      domain: "job-portal-app-mern-nqri.onrender.com",
+      secure: true,
+      sameSite: "None",
+    },
+  },
 };
 
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"],
   })
 );
 app.use(express.json());
@@ -37,11 +53,11 @@ app.use(cookieParser());
 app.use(auth(config));
 
 // function to check if user exists in db
-const ensureUserInDB = asyncHandler(async(user)=> {
+const ensureUserInDB = asyncHandler(async (user) => {
   try {
-    const existingUser = await User.findOne({auth0Id: user.sub});
+    const existingUser = await User.findOne({ auth0Id: user.sub });
 
-    if(!existingUser){
+    if (!existingUser) {
       //create a new user
 
       const newUser = new User({
@@ -50,30 +66,30 @@ const ensureUserInDB = asyncHandler(async(user)=> {
         name: user.name,
         role: "jobseeker",
         profilePicture: user.picture,
-      })
+      });
 
       await newUser.save();
 
-      console.log("User added to db", user)
+      console.log("User added to db", user);
     } else {
-      console.log("User already exists", existingUser)
+      console.log("User already exists", existingUser);
     }
   } catch (error) {
-    console.log("Error checking or adding user to db", error.message)
+    console.log("Error checking or adding user to db", error.message);
   }
-})
+});
 
-app.get("/", async(req, res) => {
-  if (req.oidc.isAuthenticated()){
+app.get("/", async (req, res) => {
+  if (req.oidc.isAuthenticated()) {
     // to check if user exists in db
     await ensureUserInDB(req.oidc.user);
 
     // redirect to the frontend
-    return res.redirect(process.env.CLIENT_URL)
+    return res.redirect(process.env.CLIENT_URL);
   } else {
-    return res.send("Logged out")
+    return res.send("Logged out");
   }
-})
+});
 
 // routes
 const routeFiles = fs.readdirSync("./routes");
